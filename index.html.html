@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>سنگ، کاغذ، قیچی با مهدی</title>
+  <style>
+    :root{--bg:#0f172a;--card:#111827ee;--text:#e5e7eb;--muted:#94a3b8;--brand:#22d3ee;--win:#22c55e;--lose:#ef4444;--draw:#f59e0b;}
+    *{box-sizing:border-box} html,body{height:100%}
+    body{margin:0;background:radial-gradient(1200px 600px at 80% -20%,#1e293b66,transparent),radial-gradient(900px 600px at -10% 120%,#0ea5e966,transparent),var(--bg);color:var(--text);font-family:Vazirmatn,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;display:grid;place-items:center;}
+    .wrap{width:min(920px,92vw);}
+    .card{background:linear-gradient(180deg,#111827cc,#0b1220cc);border:1px solid #334155;border-radius:24px;padding:20px;box-shadow:0 10px 40px #0008;backdrop-filter:blur(8px);}
+    h1{margin:0 0 8px;font-size:clamp(22px,3.5vw,32px)}
+    p.sub{margin:0 0 18px;color:var(--muted)}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+
+    .grid{display:grid;gap:16px}
+    @media(min-width:720px){.grid{grid-template-columns:1.2fr .8fr}}
+    .panel{background:#0b1220;border:1px solid #293548;border-radius:18px;padding:16px}
+
+    .choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+    .btn{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;border:1px solid #2b3a50;background:#0f172a;color:var(--text);border-radius:16px;padding:14px 10px;cursor:pointer;transition:transform .08s ease, box-shadow .2s ease, border-color .2s;user-select:none;}
+    .btn:hover{transform:translateY(-2px);box-shadow:0 10px 24px #0005;border-color:#3b4d68}
+    .btn:active{transform:translateY(0)}
+    .emoji{display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;font-size:46px;line-height:1}
+    .avatar{width:48px;height:48px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;background:#0f1a2b;border:1px solid #2b3a50;box-shadow:0 6px 16px rgba(0,0,0,.35) inset, 0 4px 10px rgba(0,0,0,.25);}
+    .avatar img{width:40px;height:40px;object-fit:cover;border-radius:999px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.25));}
+
+    .scorebox{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center}
+    .tag{font-size:12px;color:var(--muted)}
+    .num{font-size:22px;font-weight:800}
+
+    .status{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border-radius:14px;border:1px dashed #2b3a50;margin-top:12px}
+    .status .msg{font-weight:800}
+    .msg.win{color:var(--win)} .msg.lose{color:var(--lose)} .msg.draw{color:var(--draw)}
+    .vs{display:flex;align-items:center;gap:8px}
+    .vs .pill{display:inline-flex;align-items:center;gap:8px;background:#0f1a2b;border:1px solid #2b3a50;padding:8px 12px;border-radius:999px}
+    .pill .who{font-size:12px;color:var(--muted)}
+    .kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,'Liberation Mono','Courier New',monospace;font-weight:700;border:1px solid #334155;border-bottom-width:3px;padding:.2em .5em;border-radius:8px}
+    .actions{display:flex;gap:8px;flex-wrap:wrap}
+    .ghost{background:transparent;border:1px solid #334155;color:#cbd5e1;padding:10px 14px;border-radius:12px;cursor:pointer}
+    .primary{background:linear-gradient(135deg,#06b6d4,#22d3ee);color:#07131f;border:none;padding:10px 16px;border-radius:12px;font-weight:800;cursor:pointer}
+    .small{font-size:12px;color:var(--muted)}
+    footer.page{margin-top:16px;text-align:center;color:#94a3b8;font-size:13px}
+
+    /* موبایل */
+    .btn{min-height:96px; touch-action:manipulation; -webkit-tap-highlight-color: rgba(255,255,255,0);}
+    body{overscroll-behavior-y:contain;}
+    @media(max-width:840px){.grid{grid-template-columns:1fr !important}}
+    @media(max-width:480px){
+      h1{font-size:24px}
+      .wrap{width:min(96vw,560px)}
+      .btn{padding:18px 14px}
+      .emoji{width:64px;height:64px;font-size:60px}
+      .avatar{width:64px;height:64px}
+      .avatar img{width:54px;height:54px}
+      .num{font-size:24px}
+      .status{flex-direction:column; align-items:flex-start}
+    }
+
+    /* حالت روشن */
+    body.light { background: linear-gradient(180deg,#f1f5f9,#e2e8f0); color:#1e293b; }
+    body.light .card { background: #ffffffcc; border-color:#cbd5e1; color:#1e293b; }
+    body.light .panel { background:#f8fafc; border-color:#cbd5e1; }
+    body.light .btn { background:#f1f5f9; border-color:#cbd5e1; color:#0f172a; }
+    body.light .ghost { border-color:#cbd5e1; color:#0f172a; }
+    body.light .primary { background:linear-gradient(135deg,#0ea5e9,#38bdf8); color:white; }
+    body, .card, .panel, .btn, .primary, .ghost { transition: background .3s, color .3s, border-color .3s; }
+
+    /* سوئیچ روز/شب مینیمال */
+    .switch{display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-size:.9em}
+    .switch input[type=checkbox]{width:36px;height:18px;appearance:none;background:#475569;border-radius:999px;position:relative;outline:none;cursor:pointer;transition:background .2s}
+    .switch input[type=checkbox]::before{content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;background:#f1f5f9;border-radius:50%;transition:left .2s}
+    .switch input[type=checkbox]:checked{background:#0ea5e9}
+    .switch input[type=checkbox]:checked::before{left:20px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="topbar">
+        <h1 style="margin:0">سنگ، کاغذ، قیچی با مهدی</h1>
+        <label class="switch" title="تغییر حالت روز/شب">
+          <input type="checkbox" id="theme-toggle"><span>روز / شب</span>
+        </label>
+      </div>
+
+      <p class="sub">با انتخاب یکی از گزینه‌ها بازی کن؛ اولین کسی که به ۵ امتیاز برسد برنده است.</p>
+
+      <div class="grid">
+        <section class="panel">
+          <h2 style="margin-top:0;font-size:18px">انتخاب کن</h2>
+
+          <div class="choices" role="group" aria-label="انتخاب سنگ، کاغذ یا قیچی">
+            <!-- سنگ: اگر ROCK_DATA_URI تنظیم شد، عکس داخل دایره نمایش داده می‌شود -->
+            <button class="btn" data-choice="rock" aria-keyshortcuts="R" title="کلید میانبر: R">
+              <span class="emoji" id="rock-icon">🪨</span>
+              <span class="label">سنگ</span>
+              <span class="small">R</span>
+            </button>
+
+            <!-- کاغذ: آیکن SVG تمیز -->
+            <button class="btn" data-choice="paper" aria-keyshortcuts="P" title="کلید میانبر: P">
+              <span class="emoji" id="paper-icon">
+                <svg viewBox="0 0 64 64" aria-hidden="true">
+                  <rect x="10" y="6" width="42" height="52" rx="5" ry="5" fill="#e5e7eb" stroke="#cbd5e1"/>
+                  <path d="M14 16h28M14 24h32M14 32h30M14 40h26" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" opacity=".8"/>
+                </svg>
+              </span>
+              <span class="label">کاغذ</span>
+              <span class="small">P</span>
+            </button>
+
+            <!-- قیچی: ایموجی ساده بدون قاب -->
+            <button class="btn" data-choice="scissors" aria-keyshortcuts="S" title="کلید میانبر: S">
+              <span class="emoji" id="scissors-icon">✂️</span>
+              <span class="label">قیچی</span>
+              <span class="small">S</span>
+            </button>
+          </div>
+
+          <div class="status" aria-live="polite" aria-atomic="true">
+            <div class="vs">
+              <span class="pill"><span class="who">تو</span> <span id="you-emoji" class="emoji" aria-label="انتخاب تو">❔</span></span>
+              <span>در برابر</span>
+              <span class="pill"><span class="who">مهدی</span> <span id="cpu-emoji" class="emoji" aria-label="انتخاب مهدی">❔</span></span>
+            </div>
+            <div id="result" class="msg" aria-label="نتیجه">—</div>
+          </div>
+
+          <footer>
+            <div class="small">میانبرها: <span class="kbd">R</span> سنگ، <span class="kbd">P</span> کاغذ، <span class="kbd">S</span> قیچی، <span class="kbd">N</span> بازیِ جدید</div>
+            <div class="actions">
+              <button id="reset" class="ghost" title="شروع دوباره (N)">شروع دوباره</button>
+              <button id="autoplay" class="primary" title="اجرای خودکار">اجرای خودکار</button>
+            </div>
+          </footer>
+        </section>
+
+        <aside class="panel" aria-label="امتیازها">
+          <h2 style="margin-top:0;font-size:18px">امتیازها</h2>
+          <div class="scorebox">
+            <div><div class="tag">تو</div><div id="you-score" class="num">0</div></div>
+            <div><div class="tag">مساوی</div><div id="draw-score" class="num">0</div></div>
+            <div><div class="tag">مهدی</div><div id="cpu-score" class="num">0</div></div>
+          </div>
+          <div id="bestof" class="small" style="margin-top:8px">امتیاز هدف: ۵</div>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <!-- امضای صفحه -->
+  <footer class="page">
+    Developed By <strong>Mahdi Aras2</strong>
+  </footer>
+
+  <script>
+    // اگر می‌خواهی تصویر اختصاصی «سنگ» را (Base64) استفاده کنی:
+    // مقدار زیر را از "" به "data:image/png;base64,..." تغییر بده.
+    const ROCK_DATA_URI = "";
+
+    // ----- داده‌ها و ابزارها
+    const choices = [
+      { key:'rock', label:'سنگ' },
+      { key:'paper', label:'کاغذ' },
+      { key:'scissors', label:'قیچی' },
+    ];
+    const beats = { rock:'scissors', paper:'rock', scissors:'paper' };
+
+    const youEmoji = document.getElementById('you-emoji');
+    const cpuEmoji = document.getElementById('cpu-emoji');
+    const resultEl = document.getElementById('result');
+    const youScoreEl = document.getElementById('you-score');
+    const cpuScoreEl = document.getElementById('cpu-score');
+    const drawScoreEl = document.getElementById('draw-score');
+    const resetBtn = document.getElementById('reset');
+    const autoplayBtn = document.getElementById('autoplay');
+    const themeToggle = document.getElementById('theme-toggle');
+
+    let you=0, cpu=0, draw=0; const target=5; let playing=true; let autoplayTimer=null;
+
+    // اگر ROCK_DATA_URI پر باشد، آیکن سنگ را با عکس دایره‌ای جایگزین کن
+    (function initRockIcon(){
+      if(ROCK_DATA_URI){
+        const holder = document.getElementById('rock-icon');
+        holder.innerHTML =
+          '<span class="avatar"><img alt="سنگ اختصاصی" src="'+ROCK_DATA_URI+'"></span>';
+      }
+    })();
+
+    function pickCPU(){ return choices[Math.floor(Math.random()*choices.length)]; }
+    function getByKey(k){ return choices.find(c=>c.key===k); }
+
+    function iconFor(key){
+      if(key==='rock'){
+        // همان چیزی که روی دکمه است را استفاده می‌کنیم (اموجی یا آواتار)
+        return document.getElementById('rock-icon').innerHTML || document.getElementById('rock-icon').textContent;
+      }
+      if(key==='paper'){
+        return `
+          <svg viewBox="0 0 64 64" aria-hidden="true">
+            <rect x="10" y="6" width="42" height="52" rx="5" ry="5" fill="#e5e7eb" stroke="#cbd5e1"/>
+            <path d="M14 16h28M14 24h32M14 32h30M14 40h26" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" opacity=".8"/>
+          </svg>`;
+      }
+      if(key==='scissors'){ return '✂️'; }
+      return '❔';
+    }
+
+    function updateStatus(youPick, cpuPick, outcome){
+      youEmoji.innerHTML = iconFor(youPick.key);
+      cpuEmoji.innerHTML = iconFor(cpuPick.key);
+      resultEl.textContent = outcome.text;
+      resultEl.className = 'msg ' + outcome.cls;
+    }
+
+    function round(userKey){
+      if(!playing) return;
+      const youPick = getByKey(userKey);
+      const cpuPick = pickCPU();
+      let outcome = {text:'مساوی!', cls:'draw'};
+      if(youPick.key === cpuPick.key){ draw++; }
+      else if(beats[youPick.key] === cpuPick.key){ you++; outcome={text:'بردی! 🎉', cls:'win'} }
+      else { cpu++; outcome={text:'باختی! 😅', cls:'lose'} }
+      updateStatus(youPick, cpuPick, outcome);
+      youScoreEl.textContent = you; cpuScoreEl.textContent = cpu; drawScoreEl.textContent = draw;
+      checkWinner();
+    }
+
+    function checkWinner(){
+      if(you>=target || cpu>=target){
+        playing=false;
+        const win = you>cpu;
+        resultEl.textContent = win ? 'تو قهرمان شدی! 🏆' : 'مهدی برنده شد! 👑';
+        resultEl.className = 'msg ' + (win? 'win' : 'lose');
+        clearInterval(autoplayTimer); autoplayTimer=null; autoplayBtn.textContent='اجرای خودکار';
+      }
+    }
+
+    function reset(){
+      you=cpu=draw=0; playing=true; youEmoji.textContent='❔'; cpuEmoji.textContent='❔';
+      resultEl.textContent='—'; resultEl.className='msg';
+      youScoreEl.textContent=cpuScoreEl.textContent=drawScoreEl.textContent='0';
+      clearInterval(autoplayTimer); autoplayTimer=null; autoplayBtn.textContent='اجرای خودکار';
+      // اطمینان از قرارگیری درست آیکن‌ها
+      document.querySelectorAll('.btn[data-choice]').forEach(btn=>{
+        const em = btn.querySelector('.emoji');
+        if(!em) return;
+        if(btn.dataset.choice==='scissors') em.textContent = '✂️';
+        if(btn.dataset.choice==='rock' && ROCK_DATA_URI){
+          em.innerHTML = '<span class="avatar"><img alt="سنگ اختصاصی" src="'+ROCK_DATA_URI+'"></span>';
+        }
+      });
+    }
+
+    // رویدادها
+    document.querySelectorAll('.btn[data-choice]').forEach(btn=>{
+      btn.addEventListener('click', ()=> round(btn.dataset.choice));
+    });
+    resetBtn.addEventListener('click', reset);
+
+    function toggleAutoplay(){
+      if(autoplayTimer){ clearInterval(autoplayTimer); autoplayTimer=null; autoplayBtn.textContent='اجرای خودکار'; return; }
+      autoplayBtn.textContent='توقف خودکار';
+      autoplayTimer = setInterval(()=>{
+        if(!playing){ clearInterval(autoplayTimer); autoplayTimer=null; autoplayBtn.textContent='اجرای خودکار'; return; }
+        const keys=['rock','paper','scissors'];
+        round(keys[Math.floor(Math.random()*3)]);
+      }, 800);
+    }
+    autoplayBtn.addEventListener('click', toggleAutoplay);
+
+    // سوئیچ روز/شب با ذخیره در localStorage
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    const setTheme = (light)=>{
+      if(light){ document.body.classList.add('light'); localStorage.setItem('theme','light'); }
+      else { document.body.classList.remove('light'); localStorage.setItem('theme','dark'); }
+    };
+    if(savedTheme==='light'){ themeToggle.checked = true; setTheme(true); }
+    themeToggle.addEventListener('change', (e)=> setTheme(e.target.checked));
+
+    // میانبرهای صفحه‌کلید
+    window.addEventListener('keydown', (e)=>{
+      const k = e.key.toLowerCase();
+      if(k==='r') round('rock');
+      if(k==='p') round('paper');
+      if(k==='s') round('scissors');
+      if(k==='n') reset();
+    });
+  </script>
+</body>
+</html>
